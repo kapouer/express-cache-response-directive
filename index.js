@@ -17,6 +17,7 @@ const validDirectives = [
 	'no-store',
 	'max-age',
 	's-maxage',
+	'immutable',
 	'must-revalidate',
 	'proxy-revalidate',
 	'no-transform',

@@ -106,6 +106,13 @@ route('/max-age-1year', function() {
 	});
 });
 
+route('/max-age-immutable', function () {
+	this.cacheControl({
+		maxAge: '1 year',
+		immutable: true
+	});
+});
+
 route('/no-transform', function() {
 	this.cacheControl({
 		noTransform: true
@@ -311,6 +318,10 @@ describe('res.cacheControl', function() {
 
 	describe('when passed maxAge: "1 year"', function() {
 		requestShouldHaveCacheControl('/max-age-1year', 'public, max-age=31556926');
+	});
+
+	describe('when passed maxAge: "1 year" immutable', function () {
+		requestShouldHaveCacheControl('/max-age-immutable', 'public, max-age=31556926, immutable');
 	});
 
 	describe('when passed noTransform: true', function() {
