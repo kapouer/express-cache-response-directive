@@ -27,6 +27,7 @@
     "url": "https://github.com/dantman/express-cache-response-directive/issues"
   },
   "main": "index.js",
+  "types": "index.d.ts",
   "engines": {
     "node": ">=16"
   },
