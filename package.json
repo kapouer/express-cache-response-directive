@@ -23,6 +23,9 @@
     "url": "https://github.com/dantman/express-cache-response-directive/issues"
   },
   "main": "index.js",
+  "engines": {
+    "node": ">=16"
+  },
   "scripts": {
     "test": "mocha",
     "coveralls": "nyc _mocha -- -R spec && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
