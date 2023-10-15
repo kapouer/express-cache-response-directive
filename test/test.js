@@ -1,6 +1,4 @@
-/* global describe, it */
-"use strict";
-var util = require('util'),
+const util = require('util'),
 	expect = require('chai').expect,
 	express = require('express'),
 	request = require('supertest'),

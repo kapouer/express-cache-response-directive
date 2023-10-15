@@ -1,75 +1,82 @@
 "use strict";
-var debug = require('debug')('express-cache-response-directive'),
-	util = require('util'),
-	Qty = require('js-quantities'),
-	// Cache-Control header name
-	cacheControlHeader = 'Cache-Control',
-	// Regexp matching HTTP/1.1 tokens
-	tokenRegexp = /^[^\x00-\x1F\x7F()<>@,;:\\"\/\[\]?={} ]+$/,
-	// Directives defined by HTTP/1.1
-	validDirectives = [
-		'public',
-		'private',
-		'no-cache',
-		'no-store',
-		'max-age',
-		's-maxage',
-		'must-revalidate',
-		'proxy-revalidate',
-		'no-transform',
-		'stale-while-revalidate',
-		'stale-if-error'
-	],
-	// Directives with an optional field-name value
-	optionalFieldDirectives = [
-		'private',
-		'no-cache'
-	],
-	// Directives that use a number of seconds as a value
-	deltaDirectives = [
-		'max-age',
-		's-maxage',
-		'stale-while-revalidate',
-		'stale-if-error'
-	],
-	// Map of camel-cased option keys to the corresponding Cache-Control directives
-	keyMap = {
-		noCache: 'no-cache',
-		noStore: 'no-store',
-		noTransform: 'no-transform',
-		mustRevalidate: 'must-revalidate',
-		proxyRevalidate: 'proxy-revalidate',
-		maxAge: 'max-age',
-		sMaxage: 's-maxage',
-		sMaxAge: 's-maxage',
-		staleWhileRevalidate: 'stale-while-revalidate',
-		staleIfError: 'stale-if-error'
+const debug = require('debug')('express-cache-response-directive');
+const util = require('util');
+const Qty = require('js-quantities');
+
+// Cache-Control header name
+const cacheControlHeader = 'Cache-Control';
+
+// Regexp matching HTTP/1.1 tokens
+const tokenRegexp = /^[^\x00-\x1F\x7F()<>@,;:\\"/[\]?={} ]+$/;
+
+// Directives defined by HTTP/1.1
+const validDirectives = [
+	'public',
+	'private',
+	'no-cache',
+	'no-store',
+	'max-age',
+	's-maxage',
+	'must-revalidate',
+	'proxy-revalidate',
+	'no-transform',
+	'stale-while-revalidate',
+	'stale-if-error'
+];
+
+// Directives with an optional field-name value
+const optionalFieldDirectives = [
+	'private',
+	'no-cache'
+];
+
+// Directives that use a number of seconds as a value
+const deltaDirectives = [
+	'max-age',
+	's-maxage',
+	'stale-while-revalidate',
+	'stale-if-error'
+];
+
+// Map of camel-cased option keys to the corresponding Cache-Control directives
+const keyMap = {
+	noCache: 'no-cache',
+	noStore: 'no-store',
+	noTransform: 'no-transform',
+	mustRevalidate: 'must-revalidate',
+	proxyRevalidate: 'proxy-revalidate',
+	maxAge: 'max-age',
+	sMaxage: 's-maxage',
+	sMaxAge: 's-maxage',
+	staleWhileRevalidate: 'stale-while-revalidate',
+	staleIfError: 'stale-if-error'
+};
+
+// Default values for string patterns
+const patternDefaults = {
+	'public': {
+		'public': true
 	},
-	// Default values for string patterns
-	patternDefaults = {
-		'public': {
-			'public': true
-		},
-		'private': {
-			'private': true,
-		},
-		'no-cache': {
-			'no-cache' : true
-		},
-		'no-store': {
-			'no-store' : true
-		}
-	};
+	'private': {
+		'private': true,
+	},
+	'no-cache': {
+		'no-cache' : true
+	},
+	'no-store': {
+		'no-store' : true
+	}
+};
 
 function normalizeOpts(pattern, opts) {
-	var normOpts = {},
-		opt,
-		normOpt;
+	const normOpts = {};
+	let opt;
+	let normOpt;
 
 	if ( typeof pattern === 'string' ) {
 		opts = opts || {};
 
-		if ( !patternDefaults.hasOwnProperty(pattern) ) {
+		if (!Object.prototype.hasOwnProperty.call(patternDefaults, pattern) ) {
 			throw new Error("Cache-Control: Unknown simple directive pattern");
 		}
 
@@ -83,7 +90,7 @@ function normalizeOpts(pattern, opts) {
 	}
 
 	for ( opt in opts ) {
-		normOpt = keyMap.hasOwnProperty(opt) ?
+		normOpt = Object.prototype.hasOwnProperty.call(keyMap, opt) ?
 			keyMap[opt] :
 			opt;
 
@@ -98,7 +105,7 @@ function normalizeOpts(pattern, opts) {
 	// public, private, and no-cache/no-store are exclusive they may not be defined together
 	// however no-cache and no-store may be defined together
 	// and private and no-cache are only exclusive while true as other non-falsy values indicate per-header behavior
-	var exclusiveDirectives = 0;
+	let exclusiveDirectives = 0;
 	if ( normOpts['public'] ) { exclusiveDirectives++; }
 	if ( normOpts['private'] === true ) { exclusiveDirectives++; }
 	if ( normOpts['no-cache'] === true || normOpts['no-store'] ) { exclusiveDirectives++; }
@@ -131,17 +138,17 @@ module.exports = function cacheResponseDirective() {
 		// jshint validthis: true
 		opts = normalizeOpts(pattern, opts);
 
-		var directives = [];
+		const directives = [];
 
 		validDirectives.forEach(function(directiveName) {
 			// jshint newcap: false
-			if ( !opts.hasOwnProperty(directiveName) ) {
+			if (!Object.prototype.hasOwnProperty.call(opts, directiveName) ) {
 				return;
 			}
 
-			var value = opts[directiveName],
-				m,
-				qty;
+			let value = opts[directiveName];
+			let m;
+			let qty;
 
 			if ( !value ) {
 				return;
@@ -149,19 +156,19 @@ module.exports = function cacheResponseDirective() {
 
 			if ( deltaDirectives.indexOf(directiveName) !== -1 ) {
 				if ( typeof value === 'string' ) {
-					if ( m = /^(\d+)\s*(s|sec|seconds?)$/i.exec(value) ) {
+					if ( (m = /^(\d+)\s*(s|sec|seconds?)$/i.exec(value)) ) {
 						qty = Qty(parseInt(m[1], 10) + ' seconds');
-					} else if ( m = /^(\d+)\s*(min|minutes?)$/i.exec(value) ) {
+					} else if ( (m = /^(\d+)\s*(min|minutes?)$/i.exec(value)) ) {
 						qty = Qty(parseInt(m[1], 10) + ' minutes');
-					} else if ( m = /^(\d+)\s*(h|hours?)$/i.exec(value) ) {
+					} else if ( (m = /^(\d+)\s*(h|hours?)$/i.exec(value)) ) {
 						qty = Qty(parseInt(m[1], 10) + ' hours');
-					} else if ( m = /^(\d+)\s*(d|days?)$/i.exec(value) ) {
+					} else if ( (m = /^(\d+)\s*(d|days?)$/i.exec(value)) ) {
 						qty = Qty(parseInt(m[1], 10) + ' days');
-					} else if ( m = /^(\d+)\s*(w|wk|weeks?)$/i.exec(value) ) {
+					} else if ( (m = /^(\d+)\s*(w|wk|weeks?)$/i.exec(value)) ) {
 						qty = Qty(parseInt(m[1], 10) + ' weeks');
-					} else if ( m = /^(\d+)\s*(months?)$/i.exec(value) ) {
-						var months = parseInt(m[1], 10),
-							days = months * 30;
+					} else if ( (m = /^(\d+)\s*(months?)$/i.exec(value)) ) {
+						const months = parseInt(m[1], 10);
+						const days = months * 30;
 						debug('treating %s month(s) as %s days for %s', months, days, directiveName);
 						qty = Qty(days + ' days');
 					} else if ( m = /^(\d+)\s*(y|years?)$/i.exec(value) ) {
