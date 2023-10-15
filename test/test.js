@@ -1,4 +1,3 @@
-/* jshint unused: false, expr: true */
 /* global describe, it */
 "use strict";
 var util = require('util'),
