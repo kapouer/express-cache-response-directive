@@ -13,13 +13,13 @@ This middleware doesn't define legacy Expires headers. For compatibility with ol
 ## Install
 
 ```bash
-$ npm install express-cache-response-directive
+npm install express-cache-response-directive
 ```
 
 ## Usage
 
 ```js
-var cacheResponseDirective = require('express-cache-response-directive');
+const cacheResponseDirective = require('express-cache-response-directive');
 ```
 
 ```js
@@ -28,8 +28,8 @@ app.use(cacheResponseDirective());
 
 ```js
 app.get('/', function(req, res, next) {
-	res.cacheControl({maxAge: 300});
-	// ...
+  res.cacheControl({maxAge: 300});
+  // ...
 });
 ```
 
@@ -74,21 +74,22 @@ res.cacheControl("no-store");
 #### Options
 
 Each Cache-Control response directive defined in HTTP/1.1 has an option that can be defined.
-  - Options for directives that use a delta time accept a number as a value.
-    - Time values may also be expressed as strings like "3 min", "1h", "5 days".
-  - Options that optionally accept field names accept `true` for the normal non-field directive and for the with field-name directive accept either a string or an array of strings for the field names.
-  - The remaining directives that don't have a value simply accept a truthy value.
+
+- Options for directives that use a delta time accept a number as a value.
+- Time values may also be expressed as strings like "3 min", "1h", "5 days".
+- Options that optionally accept field names accept `true` for the normal non-field directive and for the with field-name directive accept either a string or an array of strings for the field names.
+- The remaining directives that don't have a value simply accept a truthy value.
 
 The public, private, no-cache, and no-store directives are exclusive only one may be specified. With the exception that no-cache and no-store may be defined together.
 
-##### public:
+##### public
 
 ```js
 res.cacheControl({'public': true});
 // Cache-Control: public
 ```
 
-##### private:
+##### private
 
 ```js
 res.cacheControl({'private': true});
@@ -105,7 +106,7 @@ res.cacheControl({'private': ["X-Private-1", "X-Private-2"]});
 // Cache-Control: private="X-Private-1, X-Private-2"
 ```
 
-##### no-cache:
+##### no-cache
 
 ```js
 res.cacheControl({'no-cache': true});
@@ -123,7 +124,7 @@ res.cacheControl({noCache: ["X-Uncached-1", "X-Uncached-2"]});
 // Cache-Control: no-cache="X-Uncached-1, X-Uncached-2"
 ```
 
-##### no-store:
+##### no-store
 
 ```js
 res.cacheControl({'no-store': true});
@@ -131,9 +132,9 @@ res.cacheControl({noStore: true});
 // Cache-Control: no-cache, no-store
 ```
 
-  - `no-store` also implies `no-cache` because some browsers have begun treating no-cache the same way they treat no-store.
+- `no-store` also implies `no-cache` because some browsers have begun treating no-cache the same way they treat no-store.
 
-##### max-age:
+##### max-age
 
 ```js
 res.cacheControl({'max-age': 300});
@@ -142,9 +143,9 @@ res.cacheControl({maxAge: "5min"});
 // Cache-Control: public, max-age=300
 ```
 
-  - `max-age` implies public if none of private, no-cache, or no-store is defined, so you can define it alone.
+- `max-age` implies public if none of private, no-cache, or no-store is defined, so you can define it alone.
 
-##### s-maxage:
+##### s-maxage
 
 ```js
 res.cacheControl({'s-maxage': 300});
@@ -153,9 +154,9 @@ res.cacheControl({sMaxAge: 300});
 // Cache-Control: public, s-maxage=300
 ```
 
-  - `s-maxage` supports `sMaxAge` in addition to the standard camel-case conversion `sMaxage` due to the potential confusion of the `max-age` to `maxAge` conversion.
+- `s-maxage` supports `sMaxAge` in addition to the standard camel-case conversion `sMaxage` due to the potential confusion of the `max-age` to `maxAge` conversion.
 
-##### must-revalidate:
+##### must-revalidate
 
 ```js
 res.cacheControl({'must-revalidate': true});
@@ -163,7 +164,7 @@ res.cacheControl({mustRevalidate: true});
 // Cache-Control: must-revalidate
 ```
 
-##### proxy-revalidate:
+##### proxy-revalidate
 
 ```js
 res.cacheControl({'proxy-revalidate': true});
@@ -171,7 +172,7 @@ res.cacheControl({proxyRevalidate: true});
 // Cache-Control: proxy-revalidate
 ```
 
-##### no-transform:
+##### no-transform
 
 ```js
 res.cacheControl({noTransform: true});
