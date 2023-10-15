@@ -53,5 +53,8 @@
       }
     ]
   },
+  "mocha": {
+    "reporter": "spec",
+    "ui": "tdd"
   }
 }
