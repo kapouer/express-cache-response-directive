@@ -141,7 +141,7 @@ module.exports = function cacheResponseDirective() {
 
 		const directives = [];
 
-		validDirectives.forEach(function(directiveName) {
+		validDirectives.forEach(directiveName => {
 			// jshint newcap: false
 			if (!Object.prototype.hasOwnProperty.call(opts, directiveName) ) {
 				return;
@@ -172,7 +172,7 @@ module.exports = function cacheResponseDirective() {
 						const days = months * 30;
 						debug('treating %s month(s) as %s days for %s', months, days, directiveName);
 						qty = Qty(days + ' days');
-					} else if ( m = /^(\d+)\s*(y|years?)$/i.exec(value) ) {
+					} else if ( (m = /^(\d+)\s*(y|years?)$/i.exec(value)) ) {
 						qty = Qty(parseInt(m[1], 10) + ' years');
 					} else {
 						throw new Error(util.format("cacheControl: Invalid time string `%s` for the %s delta directive.", value, directiveName));
@@ -196,11 +196,9 @@ module.exports = function cacheResponseDirective() {
 					value = [value];
 				}
 
-				value = value.filter(function(val) {
-					return val !== false;
-				});
+				value = value.filter(val => val !== false);
 
-				value.forEach(function(val) {
+				value.forEach(val => {
 					if ( typeof val === 'string' ) {
 						if ( tokenRegexp.test(val) ) {
 							return;

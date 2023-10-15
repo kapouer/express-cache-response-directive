@@ -8,7 +8,7 @@ const util = require('util'),
 app.use(cacheResponseDirective());
 
 function route(path, cb) {
-	app.get(path, function(req, res) {
+	app.get(path, (req, res) => {
 		cb.call(res);
 		res.send('');
 	});
@@ -229,7 +229,7 @@ route('/public-with-no-cache-header', function() {
 	});
 });
 
-app.use(function(err, req, res, next) {
+app.use((err, req, res, next) => {
 	res.status(err.status || 500);
 	res.json({
 		error: {
@@ -239,12 +239,12 @@ app.use(function(err, req, res, next) {
 	});
 });
 
-describe('res.cacheControl', function() {
+describe('res.cacheControl', () => {
 	function requestShouldHaveCacheControl(path, cacheControl) {
-		it(util.format('should have a Cache-Control header matching "%s"', cacheControl), function(done) {
+		it(util.format('should have a Cache-Control header matching "%s"', cacheControl), (done) => {
 			request(app)
 				.get(path)
-				.end(function(err, res) {
+				.end((err, res) => {
 					expect(err).to.not.exist;
 					if ( res.status !== 200 && res.body.error ) {
 						throw res.body.error;
@@ -260,139 +260,139 @@ describe('res.cacheControl', function() {
 		});
 	}
 
-	describe('when passed public: true', function() {
+	describe('when passed public: true', () => {
 		requestShouldHaveCacheControl('/public-obj', "public");
 	});
 
-	describe('when passed private: true', function() {
+	describe('when passed private: true', () => {
 		requestShouldHaveCacheControl('/private-obj', "private");
 	});
 
-	describe('when passed private: true, max-age: 300', function() {
+	describe('when passed private: true, max-age: 300', () => {
 		requestShouldHaveCacheControl('/max-age', "private, max-age=300");
 	});
 
-	describe('when passed private: true, maxAge: 300', function() {
+	describe('when passed private: true, maxAge: 300', () => {
 		requestShouldHaveCacheControl('/max-age-alt', "private, max-age=300");
 	});
 
-	describe('when passed maxAge: "300s"', function() {
+	describe('when passed maxAge: "300s"', () => {
 		requestShouldHaveCacheControl('/max-age-300s', 'public, max-age=300');
 	});
 
-	describe('when passed maxAge: "300 s"', function() {
+	describe('when passed maxAge: "300 s"', () => {
 		requestShouldHaveCacheControl('/max-age-300-s', 'public, max-age=300');
 	});
 
-	describe('when passed maxAge: "300 seconds"', function() {
+	describe('when passed maxAge: "300 seconds"', () => {
 		requestShouldHaveCacheControl('/max-age-300-s', 'public, max-age=300');
 	});
 
-	describe('when passed maxAge: "5 minutes"', function() {
+	describe('when passed maxAge: "5 minutes"', () => {
 		requestShouldHaveCacheControl('/max-age-5minutes', 'public, max-age=300');
 	});
 
-	describe('when passed maxAge: "5 min"', function() {
+	describe('when passed maxAge: "5 min"', () => {
 		requestShouldHaveCacheControl('/max-age-5min', 'public, max-age=300');
 	});
 
-	describe('when passed maxAge: "1 hour"', function() {
+	describe('when passed maxAge: "1 hour"', () => {
 		requestShouldHaveCacheControl('/max-age-1hour', 'public, max-age=3600');
 	});
 
-	describe('when passed maxAge: "1h"', function() {
+	describe('when passed maxAge: "1h"', () => {
 		requestShouldHaveCacheControl('/max-age-1h', 'public, max-age=3600');
 	});
 
-	describe('when passed maxAge: "3 days"', function() {
+	describe('when passed maxAge: "3 days"', () => {
 		requestShouldHaveCacheControl('/max-age-3day', 'public, max-age=259200');
 	});
 
-	describe('when passed maxAge: "1 week"', function() {
+	describe('when passed maxAge: "1 week"', () => {
 		requestShouldHaveCacheControl('/max-age-1week', 'public, max-age=604800');
 	});
 
-	describe('when passed maxAge: "1 month"', function() {
+	describe('when passed maxAge: "1 month"', () => {
 		requestShouldHaveCacheControl('/max-age-1month', 'public, max-age=2592000');
 	});
 
-	describe('when passed maxAge: "1 year"', function() {
+	describe('when passed maxAge: "1 year"', () => {
 		requestShouldHaveCacheControl('/max-age-1year', 'public, max-age=31556926');
 	});
 
-	describe('when passed maxAge: "1 year" immutable', function () {
+	describe('when passed maxAge: "1 year" immutable', () => {
 		requestShouldHaveCacheControl('/max-age-immutable', 'public, max-age=31556926, immutable');
 	});
 
-	describe('when passed noTransform: true', function() {
+	describe('when passed noTransform: true', () => {
 		requestShouldHaveCacheControl('/no-transform', "no-transform");
 	});
 
-	describe('when passed s-maxage: 600', function() {
+	describe('when passed s-maxage: 600', () => {
 		requestShouldHaveCacheControl('/s-maxage-1', "s-maxage=600");
 	});
 
-	describe('when passed sMaxAge: 600', function() {
+	describe('when passed sMaxAge: 600', () => {
 		requestShouldHaveCacheControl('/s-maxage-2', "s-maxage=600");
 	});
 
-	describe('when passed sMaxage: 600', function() {
+	describe('when passed sMaxage: 600', () => {
 		requestShouldHaveCacheControl('/s-maxage-3', "s-maxage=600");
 	});
 
-	describe('when passed staleWhileRevalidate: 600', function() {
+	describe('when passed staleWhileRevalidate: 600', () => {
 		requestShouldHaveCacheControl('/staleWhileRevalidate-1', "stale-while-revalidate=600");
 	});
 
-	describe('when passed stale-while-revalidate: 600', function() {
+	describe('when passed stale-while-revalidate: 600', () => {
 		requestShouldHaveCacheControl('/staleWhileRevalidate-2', "stale-while-revalidate=600");
 	});
 
-	describe('when passed stale-while-revalidate: 1h', function() {
+	describe('when passed stale-while-revalidate: 1h', () => {
 		requestShouldHaveCacheControl('/staleWhileRevalidate-1h', "stale-while-revalidate=3600");
 	});
 
-	describe('when passed stale-if-error: 600', function() {
+	describe('when passed stale-if-error: 600', () => {
 		requestShouldHaveCacheControl('/staleIfError-1', "stale-if-error=600");
 	});
 
-	describe('when passed staleIfError: 600', function() {
+	describe('when passed staleIfError: 600', () => {
 		requestShouldHaveCacheControl('/staleIfError-2', "stale-if-error=600");
 	});
 
-	describe('when passed staleIfError: 1h', function() {
+	describe('when passed staleIfError: 1h', () => {
 		requestShouldHaveCacheControl('/staleIfError-1h', "stale-if-error=3600");
 	});
 
-	describe('when passed mustRevalidate: true', function() {
+	describe('when passed mustRevalidate: true', () => {
 		requestShouldHaveCacheControl('/must-revalidate', "must-revalidate");
 	});
 
-	describe('when passed proxyRevalidate: true', function() {
+	describe('when passed proxyRevalidate: true', () => {
 		requestShouldHaveCacheControl('/proxy-revalidate', "proxy-revalidate");
 	});
 
-	describe('when passed "public"', function() {
+	describe('when passed "public"', () => {
 		requestShouldHaveCacheControl('/public-pattern', "public");
 	});
 
-	describe('when passed "private"', function() {
+	describe('when passed "private"', () => {
 		requestShouldHaveCacheControl('/private-pattern', "private");
 	});
 
-	describe('when passed "no-cache"', function() {
+	describe('when passed "no-cache"', () => {
 		requestShouldHaveCacheControl('/no-cache-pattern', "no-cache");
 	});
 
-	describe('when passed "no-store"', function() {
+	describe('when passed "no-store"', () => {
 		requestShouldHaveCacheControl('/no-store-pattern', "no-cache, no-store");
 	});
 
-	describe('when passed "unknown"', function() {
-		it('should throw an error', function(done) {
+	describe('when passed "unknown"', () => {
+		it('should throw an error', (done) => {
 			request(app)
 				.get('/unknown-pattern-error')
-				.end(function(err, res) {
+				.end((err, res) => {
 					expect(err).to.not.exist;
 					expect(res).to.have.a.property('status')
 						.that.equals(500);
@@ -404,19 +404,19 @@ describe('res.cacheControl', function() {
 		});
 	});
 
-	describe('when passed "private" and mustRevalidate: true', function() {
+	describe('when passed "private" and mustRevalidate: true', () => {
 		requestShouldHaveCacheControl('/pattern-and-opts', "private, must-revalidate");
 	});
 
-	describe('when passed "public" and private: "X-Private"', function() {
+	describe('when passed "public" and private: "X-Private"', () => {
 		requestShouldHaveCacheControl('/public-with-private-header', 'public, private="X-Private"');
 	});
 
-	describe('when passed "public" and private: ["X-Private-1", "X-Private-2"]', function() {
+	describe('when passed "public" and private: ["X-Private-1", "X-Private-2"]', () => {
 		requestShouldHaveCacheControl('/public-with-private-headers', 'public, private="X-Private-1, X-Private-2"');
 	});
 
-	describe('when passed "public" and no-cache: "X-Uncached"', function() {
+	describe('when passed "public" and no-cache: "X-Uncached"', () => {
 		requestShouldHaveCacheControl('/public-with-no-cache-header', 'public, no-cache="X-Uncached"');
 	});
 
