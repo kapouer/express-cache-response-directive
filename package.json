@@ -1,6 +1,6 @@
 {
   "name": "@kapouer/express-cache-response-directive",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "license": "MIT",
   "description": "ExpressJS middleware that gives Response objects an intuitive .cacheControl method to set Cache-Control headers.",
   "keywords": [
@@ -9,15 +9,18 @@
     "expires",
     "cache control"
   ],
-  "contributors": [{
-    "name": "Daniel Friesen",
-    "url": "http://danielfriesen.name",
-    "email": "daniel@nadir-seen-fire.com"
-  }, {
-    "name": "Jérémy Lal",
-    "url": "https://github.com/kapouer",
-    "email": "kapouer@melix.org"
-  }],
+  "contributors": [
+    {
+      "name": "Daniel Friesen",
+      "url": "http://danielfriesen.name",
+      "email": "daniel@nadir-seen-fire.com"
+    },
+    {
+      "name": "Jérémy Lal",
+      "url": "https://github.com/kapouer",
+      "email": "kapouer@melix.org"
+    }
+  ],
   "homepage": "https://github.com/kapouer/express-cache-response-directive",
   "repository": {
     "type": "git",
